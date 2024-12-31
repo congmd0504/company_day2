@@ -47,6 +47,9 @@ class CartController extends Controller
                     return redirect()->route('products.index')->with('error', 'Số lượng trong giỏ hàng lớn hơn số lượng tồn kho.');
                 }
                 $item['quantity'] = $newQuantity;
+                if ($request->quantity) {
+                    $item['quantity'] = $request->quantity;
+                }
                 $found = true;
                 break;
             }
@@ -61,6 +64,9 @@ class CartController extends Controller
                 'stock' => $product->stock,
                 'discount' => $product->discount,
             ];
+        }
+        if ($request->quantity && $request->index) {
+            $cart[$request->index]['quantity'] = $request->quantity;
         }
         session()->put('cart', $cart);
         return redirect()->back()->with('success', 'Thêm vào giỏ hàng thành công.');
@@ -80,25 +86,6 @@ class CartController extends Controller
     public function edit(string $id)
     {
         //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $product = Product::find($request->product_id);
-        if ($request->quantity > $product->stock) {
-            return redirect()->route('carts.index')->with('error', 'Số lượng mua lớn hơn số lượng tồn kho');
-        }
-        $request->validate([
-            'quantity' => 'required|numeric|min:1',
-        ]);
-        $cart = session()->get('cart', []);
-
-        $cart[$id]['quantity'] = $request->quantity;
-        session()->put('cart', $cart);
-        return redirect()->route('carts.index')->with('success', 'Cập nhật số lượng thành công');
     }
 
     /**

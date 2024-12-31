@@ -14,8 +14,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('user')->paginate(5);
-        // dd($products);
+        $products = Product::select('products.*', 'users.name as user_name')
+            ->join('users', 'users.id', '=', 'updated_by')
+            ->latest('id')
+            ->paginate(5);
         return view('products.index', compact('products'));
     }
 
@@ -51,8 +53,12 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
+        $product = product::find($id);
+        if (!$product) {
+            return redirect()->back()->with('error', 'Không tìm thấy sản phẩm');
+        }
         return view('products.update', compact('product'));
     }
 
@@ -72,9 +78,13 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
         try {
+            $product = Product::find($id);
+            if (!$product) {
+                return redirect()->back()->with('error', 'Không tìm thấy sản phẩm');
+            }
             $product->delete();
             return redirect()->route('products.index')->with('success', 'Xóa thành công');
         } catch (\Throwable $th) {

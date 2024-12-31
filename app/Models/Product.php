@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 class Product extends Model
@@ -16,7 +17,19 @@ class Product extends Model
         parent::__construct($attributes);
         $this->fillable = Schema::getColumnListing($this->getTable());
     }
-    public function user(){
-        return $this->belongsTo(User::class);
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $model->created_by = Auth::id();
+                $model->updated_by = Auth::id();
+            }
+        });
+        static::updating(function ($model) {
+            if (Auth::check()) {
+                $model->updated_by = Auth::id();
+            }
+        });
     }
 }

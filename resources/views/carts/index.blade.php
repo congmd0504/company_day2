@@ -20,10 +20,10 @@
                 <tr class="text-center">
                     <td>{{ $cart['name'] }}</td>
                     <td>
-                        <form action="{{ route('carts.update', $index) }}" method="POST">
+                        <form action="{{ route('carts.store') }}" method="POST">
                             @csrf
-                            @method('PUT')
                             <input type="hidden" name="product_id" value="{{ $cart['product_id'] }}">
+                            <input type="hidden" name="index" value="{{ $index }}">
                             <input type="number" min="1" name="quantity" value="{{ $cart['quantity'] }}">
                             <button type="submit">Cập nhập</button>
                         </form>

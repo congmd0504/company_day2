@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('stock');
             $table->integer('price');
             $table->integer('discount');
-            $table->foreignIdFor(User::class)->constrained();
+            $table->bigInteger('created_by');
+            $table->bigInteger('updated_by');
             $table->timestamps();
         });
     }

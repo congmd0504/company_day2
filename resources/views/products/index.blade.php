@@ -30,7 +30,7 @@
             <td>{{$product->sold}}</td>
             <td>{{number_format($product->price)}} vnđ</td>
             <td>{{$product->discount}} %</td>
-            <td>{{$product->user->name}}</td>
+            <td>{{$product->user_name}}</td>
             <td class="d-flex">
                 <form action="{{route('products.destroy',$product)}}" method="POST">
                     @csrf
